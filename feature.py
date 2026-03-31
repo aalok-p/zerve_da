@@ -19,3 +19,21 @@ df['day_of_week'] = df['timestamp'].dt.dayofweek
 event_counts =df['event'].value_counts().head(20)
 print(event_counts)
 
+#group by user
+user_features =[]
+for user_id, user_data in df.groupby('person_id'):
+    features= {
+        'person_id': len(user_data),
+        'uique_sessions':   
+         user_data['prop_$session_id'].nunique(),
+        'days_active': user_data['date'].nunique(),
+        'first_seen': user_data['timestamp'].min(),
+        'last_seen': user_data['timestamp'].max(),
+         
+# specific event counts
+    'unique_event_types': user_data['event'].nunique(),
+
+#specific event counts
+        'sign_in_count': (user_data['event'] == 'sign_in').sum(),
+        'sign_up_count': (user_data['event'] == 'sign_up').sum(),
+    }
