@@ -30,10 +30,29 @@ for user_id, user_data in df.groupby('person_id'):
         'first_seen': user_data['timestamp'].min(),
         'last_seen': user_data['timestamp'].max(),
          
-# specific event counts
-    'unique_event_types': user_data['event'].nunique(),
+        # specific event counts
+        'unique_event_types': user_data['event'].nunique(),
 
-#specific event counts
+        #specific event counts
         'sign_in_count': (user_data['event'] == 'sign_in').sum(),
         'sign_up_count': (user_data['event'] == 'sign_up').sum(),
+        'block_create_count': (user_data['event'] == 'block_create').sum(),
+        'block_delete_count': (user_data['event'] == 'block_delete').sum(),
+        'run_block_count': (user_data['event'] == 'run_block').sum(),
+        'agent_new_chat_count': (user_data['event'] == 'agent_new_chat').sum(),
+        'agent_message_count': (user_data['event'] == 'agent_message').sum(),
+
+        #agent tool
+        'agent_create_block_count': (user_data['event'] == 'agent_tool_call_create_block_tool').sum(),
+        'agent_run_block_count': (user_data['event'] =='agent_tool_call_run_block_tool').sum(),
+        'agent_get_block_count': (user_data['event'] == 'agent_tool_call_get_block_tool').sum(),
+        'agent_refactor_block_count': (user_data['event'] == 'agent_tool_call_refactor_block_tool').sum(),
+        
+        #credits
+        'credits_used_events': (user_data['event'] =='credits_used').sum(),
+        'credits_exceeded_count': (user_data['event'] == 'credits_exceeded').sum(),
+        'addon_credits_count': (user_data['event'] == 'addon_credits_used').sum(),
     }
+    user_features.append(features)
+
+users_df = pd.DataFrame(user_features)
