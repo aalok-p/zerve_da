@@ -56,3 +56,15 @@ for user_id, user_data in df.groupby('person_id'):
     user_features.append(features)
 
 users_df = pd.DataFrame(user_features)
+
+#dervied feat
+users_df['lifetime_days'] =(users_df['last_seen']-users_df['first_seen']).dt.total_seconds()/86400
+users_df['events_per_day'] =users_df['total_events'] / (users_df['lifetime_days']+1)
+users_df['sessions_per_day']= users_df['unique_sessions'] /(users_df['days_active']+1)
+users_df['events_per_session']= users_df['total_events'] /(users_df['unique_sessions']+1)
+
+users_df['uses_agent'] = (users_df['agent_new_chat_count']>0)|(users_df['agent_message_count'] > 0)
+users_df['block_execution_rate'] = users_df['run_block_count']/(users_df['block_create_count'] + 1)
+
+print(f"\n created features for {len(users_df):,} user")
+print(f" total feature: {len(users_df.columns)}")
