@@ -68,3 +68,13 @@ users_df['block_execution_rate'] = users_df['run_block_count']/(users_df['block_
 
 print(f"\n created features for {len(users_df):,} user")
 print(f" total feature: {len(users_df.columns)}")
+
+
+users_df['engagement_score'] = ((users_df['days_active'].clip(0, 30) / 30) * 40 + (users_df['unique_sessions'].clip(0, 20)/20)*30+ (users_df['events_per_day'].clip(0,50)/50)* 0) * 100 / 100
+users_df['technical_score']=(((users_df['block_create_count'] > 0).astype(int)) * 20 + ((users_df['run_block_count'] > 0).astype(int)) * 20 + ((users_df['uses_agent']).astype(int)) * 30 +((users_df['agent_refactor_block_count'] > 0).astype(int)) * 15 +((users_df['unique_event_types'] > 10).astype(int)) * 15)
+users_df['commitment_score'] = ((users_df['credits_used_events'].clip(0, 50) / 50) * 50 +((users_df['addon_credits_count'] > 0).astype(int))*50)
+users_df['success_score'] = (users_df['engagement_score'] * 0.4 +users_df['technical_score'] * 0.35 +users_df['commitment_score'] * 0.25)
+users_df['success_category'] = pd.cut(users_df['success_score'],bins=[0, 25, 50, 75, 100],labels=['Low', 'Medium', 'High', 'Very High'])
+
+print(users_df['success_category'].value_counts().sort_index())
+print(users_df['success_score'].describe())
