@@ -62,3 +62,16 @@ segment_stats = users_df.groupby('segment').agg({
 segment_stats.columns = ['Count', 'Avg Success Score', 'Avg Days Active', 'Avg Events', 'Agent Users']
 
 print(segment_stats)
+
+high_performers = users_df[users_df['success_score'] >= 60]
+low_performers = users_df[users_df['success_score'] < 30]
+
+comparison_metrics = [
+    'days_active', 'unique_sessions', 'block_create_count', 
+    'run_block_count', 'agent_new_chat_count', 'credits_used_events'
+]
+
+comparison_data = pd.DataFrame({
+    'High Performers': high_performers[comparison_metrics].mean(),
+    'Low Performers': low_performers[comparison_metrics].mean()
+})
