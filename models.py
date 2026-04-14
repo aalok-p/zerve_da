@@ -35,3 +35,30 @@ feature_importance = pd.DataFrame({
     'feature': feature_cols,
     'importance': rf_model.feature_importances_
 }).sort_values('importance', ascending=False)
+
+
+#segment users on behaviour pattern
+def segment_user(row):
+    if row['addon_credits_count'] > 0:
+        return 'Power User (Paid)'
+    elif row['uses_agent'] and row['days_active'] >= 5:
+        return 'Active Agent User'
+    elif row['days_active'] >= 5 and row['total_events'] > 50:
+        return 'Engaged User'
+    elif row['days_active'] <= 1:
+        return 'One-Time Visitor'
+    else:
+        return 'Casual User'
+
+users_df['segment'] = users_df.apply(segment_user, axis=1)
+
+segment_stats = users_df.groupby('segment').agg({
+    'person_id': 'count',
+    'success_score': 'mean',
+    'days_active': 'mean',
+    'total_events': 'mean',
+    'uses_agent': 'sum'
+}).round(2)
+segment_stats.columns = ['Count', 'Avg Success Score', 'Avg Days Active', 'Avg Events', 'Agent Users']
+
+print(segment_stats)
