@@ -54,3 +54,15 @@ metrics_to_plot = [
     ('ran_blocks_in_week', 'Ran Blocks (%)'),
     ('used_agent_in_week', 'Used Agent (%)')
 ]
+
+hourly_activity = df.groupby('hour')['event'].count()
+peak_hours = hourly_activity.nlargest(5)
+for hour, count in peak_hours.items():
+    print(f"  • {hour:02d}:00 - {count:,} events")
+
+daily_activity = df.groupby('day_of_week')['event'].count()
+day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+users_with_signup = df[df['event'] == 'sign_up'].groupby('person_id')['timestamp'].min().reset_index()
+users_with_signup.columns = ['person_id', 'signup_date']
+users_with_signup['signup_week'] = users_with_signup['signup_date'].dt.to_period('W')
