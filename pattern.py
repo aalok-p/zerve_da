@@ -38,3 +38,19 @@ for user_id, user_data in df.groupby('person_id'):
     }
     
     user_first_week.append(first_week_metrics)
+
+first_week_df = pd.DataFrame(user_first_week)
+retention_rate = first_week_df['returned_after_week_1'].mean() * 100
+
+retained_users = first_week_df[first_week_df['returned_after_week_1']]
+churned_users = first_week_df[~first_week_df['returned_after_week_1']]
+
+
+metrics_to_plot = [
+    ('first_week_events', 'Events in Week 1'),
+    ('first_week_days_active', 'Days Active'),
+    ('first_week_sessions', 'Sessions'),
+    ('created_blocks_in_week', 'Created Blocks (%)'),
+    ('ran_blocks_in_week', 'Ran Blocks (%)'),
+    ('used_agent_in_week', 'Used Agent (%)')
+]
