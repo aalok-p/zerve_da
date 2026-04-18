@@ -17,3 +17,15 @@ for category in ['Low', 'Medium', 'High', 'Very High']:
     pct = count / len(users_df) * 100
     report.append(f"  • {category}: {count:,} users ({pct:.1f}%)")
 report.append("")
+
+agent_users = users_df[users_df['uses_agent'] == True]
+non_agent_users = users_df[users_df['uses_agent'] == False]
+agent_lift = agent_users['success_score'].mean() - non_agent_users['success_score'].mean()
+retained = first_week[first_week['returned_after_week_1'] == True]
+churned = first_week[first_week['returned_after_week_1'] == False]
+retention_rate = len(retained) / len(first_week) * 100
+
+avg_execution_rate = users_df['block_execution_rate'].mean()
+high_exec = users_df[users_df['block_execution_rate'] > avg_execution_rate]
+low_exec = users_df[users_df['block_execution_rate'] <= avg_execution_rate]
+
