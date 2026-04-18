@@ -29,3 +29,18 @@ avg_execution_rate = users_df['block_execution_rate'].mean()
 high_exec = users_df[users_df['block_execution_rate'] > avg_execution_rate]
 low_exec = users_df[users_df['block_execution_rate'] <= avg_execution_rate]
 
+segment_summary = users_df.groupby('segment').agg({
+    'person_id': 'count',
+    'success_score': 'mean',
+    'days_active': 'mean',
+    'total_events': 'mean'
+}).round(1)
+segment_summary.columns = ['Count', 'Avg Success', 'Avg Days', 'Avg Events']
+
+for segment in segment_summary.index:
+    data = segment_summary.loc[segment]
+    report.append(f"{segment}")
+    report.append(f"  • Users: {int(data['Count']):,} ({data['Count']/len(users_df)*100:.1f}%)")
+    report.append(f"  • Success Score: {data['Avg Success']:.1f}")
+    report.append(f"  • Avg Days Active: {data['Avg Days']:.1f}")
+    report.append(f"  • Avg Events: {data['Avg Events']:.1f}")
